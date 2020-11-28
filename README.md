@@ -19,6 +19,7 @@ Welcome to the Directory Grapher!
 Enter a directory name that is in this directory. Valid directory names are given below:
          .vscode
          Demo
+         Documentation
 Directory Name: Demo
 Show number of files/directories and memory use for each directory? (y/n): n
 Show files in each directory? (y/n): y
@@ -36,11 +37,11 @@ As you'll see in the log above, there are several options to customize the graph
 
 ### Options
 
-*Demo Graph with Data and Files Shown* | Demo Graph with only Data shown
+Demo Graph with Data and Files Shown | Demo Graph with only Data shown
 :---: | :---:
 <img src="Documentation/Demo_Graph_Data_Files.png" alt="Demo Graph with Data and Files Shown" /> | <img src="Documentation/Demo_Graph_Data.png" alt="Demo Graph with only Data Shown" />
 **Demo Graph with only Files Shown** | **Demo Graph with neither Data or Files Shown**
-<img src="Documentation/Demo_Graph_Files.png" alt="Demo Graph with only Files Shown" /> | <img src="Documentation/Demo_Graph_BT.png" alt="Demo Graph with neither Data or Files Shown" />
+<img src="Documentation/Demo_Graph_Files.png" alt="Demo Graph with only Files Shown" /> | <img src="Documentation/Demo_Graph_None.png" alt="Demo Graph with neither Data or Files Shown" />
 
 ### Orientations
 
