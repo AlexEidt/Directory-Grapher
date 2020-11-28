@@ -70,6 +70,15 @@ Argument | Default | Description
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
 
+## Dependecies
+
+* [Python 3.7+](https://www.python.org/)
+* [GraphViz](https://graphviz.gitlab.io/download/)
+
+```
+pip3 install graphviz
+```
+
 ## GraphViz Note
 
 In order for the visual representation with Graphviz to work, Graphviz must be downloaded. Download GraphViz here: https://graphviz.gitlab.io/download/. Once downloaded go to `graph_dir.py` and change the System Path under `GRAPHVIZ PATH SETUP`. Replace `'C:\\Graphviz\\bin'` with the path to the bin folder of the downloaded GraphViz folder.
