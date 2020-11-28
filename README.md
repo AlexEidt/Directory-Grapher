@@ -40,7 +40,7 @@ As you'll see in the log above, there are several options to customize the graph
 :---: | :---:
 <img src="Documentation/Demo_Graph_Data_Files.png" alt="Demo Graph with Data and Files Shown" /> | <img src="Documentation/Demo_Graph_Data.png" alt="Demo Graph with only Data Shown" />
 **Demo Graph with only Files Shown** | **Demo Graph with neither Data or Files Shown**
-<img src="Documentation/Demo_Graph_Files.png" alt="Demo Graph with only Files Shown" /> | <img src="Documentation/Demo_Graph_Data_BT.png" alt="Demo Graph with neither Data or Files Shown" />
+<img src="Documentation/Demo_Graph_Files.png" alt="Demo Graph with only Files Shown" /> | <img src="Documentation/Demo_Graph_BT.png" alt="Demo Graph with neither Data or Files Shown" />
 
 ### Orientations
 
@@ -50,7 +50,7 @@ Bottom to Top | Top to Bottom
 :---: | :---:
 <img src="Documentation/Demo_Graph_BT.png" alt="Demo Graph Bottom to Top" /> | <img src="Documentation/Demo_Graph_TB.png" alt="Demo Graph Top to Bottom" />
 **Left to Right** | **Right to Left**
-<img src="Documentation/Demo_Graph_LR.png" alt="Demo Graph Left to Right" /> | <img src="Documentation/Demo_Graph_Data_RL.png" alt="Demo Graph Right to Left" />
+<img src="Documentation/Demo_Graph_LR.png" alt="Demo Graph Left to Right" /> | <img src="Documentation/Demo_Graph_RL.png" alt="Demo Graph Right to Left" />
 
 ## Documentation
 
@@ -64,8 +64,8 @@ main(directory_name, orientation=orientation, data=data, show_files=show_files)
 
 Argument | Default | Description
 --- | --- | ---
-`directory_name` | N/A | The name of the directory you'd like to create a graph for.
-`orientation` | `'LR'` | The orientation of the graph.
+`directory_name` | N/A | The name of the directory you'd like to create a graph for. Directory must be present in the same directory as the `graph_dir.py` script or else an `AssertionError` will be thrown.
+`orientation` | `'LR'` | The orientation of the graph. Must be either `'LR'`, `'RL'`, `'BT'`, or `'TB'`. If `orientation` is none of those values, an `AssertionError` is thrown.
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
 
