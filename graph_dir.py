@@ -16,33 +16,47 @@ os.environ['PATH'] += os.pathsep + 'C:\\Graphviz\\bin'
 # ---------------------------------------------------------------------- #
 
 
-def size(path):
-    """
-    Recursively calculates the size of all files in the given "path"
-    directory. Returns this size in its corresponding bytes representation.
-    """
-    size = 0
-    for root, dirs, files in os.walk(path):
-        size += sum([os.path.getsize(os.path.join(root, f)) for f in files])
-    
-    return convert(size)
-
-
 def convert(size):
     """
     Converts the given "size" into its corresponding bytes representation
     rounded to two decimal places.
     """
-    kilo = 2 ** 10
+    kilo = 1024
     sizes = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     index = 0
     while int(size / kilo) > 0:
         size /= kilo
         index += 1
+    suffix = sizes[index]
     if index == 0 and size == 1:
-        sizes[index] = 'byte'
+        suffix = 'byte'
 
-    return f'{round(size, 2)} {sizes[index]}'
+    return f'{round(size, 2)} {suffix}'
+
+
+def size(path):
+    """
+    Recursively calculates the size of all files in the given "path"
+    directory in an efficient way by starting at the bottom of the directory
+    and building up directory sizes. 
+    
+    Returns a dictionary mapping directory paths to their memory footprint.
+    """
+    file_sizes = {}
+    for root, dirs, files in os.walk(os.path.normpath(f'./{path}/'), topdown=False):
+        size = sum([os.path.getsize(os.path.join(root, f)) for f in files])
+        file_sizes[root] = size
+
+        for dir_ in dirs:
+            path = os.path.join(root, dir_)
+            if path in file_sizes:
+                file_sizes[root] += file_sizes[path]
+
+    # Convert all sizes in bytes to bytes, MB, GB, etc.
+    for path, size in file_sizes.items():
+        file_sizes[path] = convert(size)
+    
+    return file_sizes
 
 
 def main(directory, orientation='LR', data=False, show_files=True):
@@ -77,6 +91,10 @@ def main(directory, orientation='LR', data=False, show_files=True):
     index = 0
     multiple = lambda l: '' if l == 1 else 's'
 
+    # Get data for size of each folder
+    if data:
+        dir_sizes = size(directory)
+
     for root, dirs, files in os.walk(os.path.normpath(f'./{directory}/')):
         tree.attr('node', shape='folder', fillcolor='lemonchiffon', style='filled,bold')
 
@@ -87,15 +105,16 @@ def main(directory, orientation='LR', data=False, show_files=True):
         directory_data = os.path.basename(parent_directory)
         
         # Display directory data if parameters permit
+        file_memory = convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))
         if data:
-            directory_data += f' ({size(root)})'
+            directory_data += f' ({dir_sizes[root]})'
         directory_data += '\l'
         if data and dirs:
             directory_data += f'{len(dirs)} Folder{multiple(len(dirs))}\l'
         if data and files:
             directory_data += f'{len(files)} File{multiple(len(files))}'
             if not show_files:
-                directory_data += f' ({convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))})'
+                directory_data += f' ({file_memory})'
             directory_data += '\l'
 
         tree.node(root, label=directory_data)
@@ -103,6 +122,7 @@ def main(directory, orientation='LR', data=False, show_files=True):
             path = os.path.join(root, dir_)
             tree.node(path, label=dir_)
             tree.edge(root, path)
+
         if files and show_files:
             index += 1
             tree.attr('node', shape='box', style='')
@@ -112,8 +132,7 @@ def main(directory, orientation='LR', data=False, show_files=True):
             file_node = ''
             if data:
                 file_node = f'{len(files)} File{multiple(len(files))}'
-                memory_ = f'({convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))})'
-                file_node += f' {memory_}\l'
+                file_node += f' ({file_memory})\l'
             file_node += file_list
             id_ = f'{index}{file_node}'
             tree.node(id_, label=file_node)
