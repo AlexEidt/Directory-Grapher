@@ -17,18 +17,21 @@ Once you enter the command above you'll see several prompts. An example is shown
 Welcome to the Directory Grapher!
 
 Enter a directory name that is in this directory. Valid directory names are given below:
+         .git
          .vscode
          Demo
          Documentation
-Directory Name: Demo
-Show number of files/directories and memory use for each directory? (y/n): n
+directory Name: Demo
+
+Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): n
+Show number of files/directories and memory use for each directory? (y/n): y
 Show files in each directory? (y/n): y
-How should the graph be oriented?
+How should the graph be oriented? 
 Top -> Bottom: TB
 Bottom -> Top: BT
 Left -> Right: LR
 Right -> Left: RL
-Choose one of the options above and enter here: RL
+Choose one of the options above and enter here: LR
 
 The directory graph (Demo_Graph.png) has been created in this directory.
 ```
@@ -58,7 +61,7 @@ Bottom to Top | Top to Bottom
 In order to create the directory graphs call the `main` function in `graph_dir.py`:
 
 ```python
-main(directory_name, orientation=orientation, data=data, show_files=show_files)
+main(directory_name, orientation=orientation, data=data, show_files=show_files, show_hidden=show_hidden)
 ```
 
 ### Arguments
