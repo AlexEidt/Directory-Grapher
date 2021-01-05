@@ -23,6 +23,7 @@ Enter a directory name that is in this directory. Valid directory names are give
          Documentation
 directory Name: Demo
 
+Enter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit):
 Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): n
 Show number of files/directories and memory use for each directory? (y/n): y
 Show files in each directory? (y/n): y
@@ -36,7 +37,7 @@ Choose one of the options above and enter here: LR
 The directory graph (Demo_Graph.png) has been created in this directory.
 ```
 
-As you'll see in the log above, there are several options to customize the graph that is created. It's possible to show data for each directory (the number of sub-directories and files in that directory, as well as the memory use of each file and directory). The user may also choose to show or hide the files in each directory. The user may also choose the orientation of the graph, whether it should start at the bottom and go up, start at the top and go down, start left and go right, or start right and go left.
+As you'll see in the log above, there are several options to customize the graph that is created. It's possible to show data for each directory (the number of sub-directories and files in that directory, as well as the memory use of each file and directory). The user may also choose to show or hide the files in each directory. The user may also choose the orientation of the graph, whether it should start at the bottom and go up, start at the top and go down, start left and go right, or start right and go left. The user can also limit the directory depth for visualization, which may be useful for large directories with many levels of subdirectories.
 
 ### Options
 
@@ -56,6 +57,18 @@ Bottom to Top | Top to Bottom
 **Left to Right** | **Right to Left**
 <img src="Documentation/Demo_Graph_LR.png" alt="Demo Graph Left to Right" /> | <img src="Documentation/Demo_Graph_RL.png" alt="Demo Graph Right to Left" />
 
+### Depth Limiting
+
+Note that all combinations of parameters with all combinations of orientations are compatible with any depth.
+
+1 | 2
+:---: | :---:
+<img src="Documentation/Demo_Graph_1.png" alt="Demo Graph  with Depth 1" /> | <img src="Documentation/Demo_Graph_2.png" alt="Demo Graph with Depth 2" />
+**3** | **All (Default)**
+<img src="Documentation/Demo_Graph_3.png" alt="Demo Graph with Depth 3" /> | <img src="Documentation/Demo_Graph_3.png" alt="Demo Graph all levels" />
+
+Note that if you enter a depth that is greater than the total levels in the directory, all levels will be visualized.
+
 ## Documentation
 
 In order to create the directory graphs call the `main` function in `graph_dir.py`:
@@ -73,6 +86,7 @@ Argument | Default | Description
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
 `show_hidden` | `False` | If `True` include hidden directories (those starting with `__` or `.`) and their contents in the visualization. If `False`, do not show any hidden directories.
+`max_depth` | `-1` | If this value is negative or `0`, the entire directory structure will be visualized. Otherwise, the directory depth will stop at a the value passed in by the user. I.e, if the user passes in `1` as the `max_depth`, then the visualization will only show the immediate files and folders inside of the root folder and none of the subfolders. This is useful for large directories with many levels of subfolders that would be incomprehensibly small on a visualization. In such a case, limiting the directory depth will make visuals much cleaner and easier to look at.
 
 ## Dependecies
 

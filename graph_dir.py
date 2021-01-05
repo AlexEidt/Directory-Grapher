@@ -59,7 +59,7 @@ def size(path):
     return file_sizes
 
 
-def main(directory, orientation='LR', data=False, show_files=True, show_hidden=False):
+def main(directory, orientation='LR', data=False, show_files=True, show_hidden=False, max_depth=-1):
     """
     Creates an acyclic directed adjacency graph of the given directory.
 
@@ -82,6 +82,10 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
     show_files: If True, shows files that are part of the directory.
 
     show_hidden: If True, include hidden directories/objects in the visualization.
+
+    max_depth: The maximum length of the directory "tree" branches that are created. Useful for
+               large directories with many levels of subfolders if you want to limit the
+               visualization to only the first few layers.
     """
     assert directory in os.listdir(), f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ['LR', 'RL', 'TB', 'BT']
@@ -99,7 +103,10 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
         dir_sizes = size(directory)
 
     hidden = ('__', '.')
-    for root, dirs, files in os.walk(os.path.normpath(f'./{directory}/')):
+    walkdir = os.path.normpath(f'./{directory}/')
+    for root, dirs, files in os.walk(walkdir):
+        if max_depth > 0 and root.count(os.sep) >= max_depth:
+            continue
         if not show_hidden:
             dirs[:] = [dir_ for dir_ in dirs if not dir_.startswith(hidden)]
         tree.attr('node', shape='folder', fillcolor='lemonchiffon', style='filled,bold')
@@ -165,7 +172,10 @@ def introduction():
         directory_name = input(f'{directory_name} is not in the directory. Please enter a new directory name: ')
     del valid
 
-    hidden = input('\nWould you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): ').lower()
+    depth = input('\nEnter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit): ')
+    while depth and not depth.isdigit():
+        depth = input('Invalid Depth value. Must be an integer. Please enter again (Enter/Return for no limit): ')
+    hidden = input('Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): ').lower()
     data = input('Show number of files/directories and memory use for each directory? (y/n): ').lower()
     show_files = input('Show files in each directory? (y/n): ').lower()
     print('How should the graph be oriented? ')
@@ -176,7 +186,7 @@ def introduction():
         orientation = input('Invalid orientation. Please enter again: ')
 
     main(directory_name, orientation=orientation, data=(data == 'y'), show_files=(show_files == 'y'),
-        show_hidden=(hidden == 'y'))
+        show_hidden=(hidden == 'y'), max_depth=int(depth) if depth else -1)
 
     print(f'\nThe directory graph ({directory_name}_Graph.png) has been created in this directory.')
 
