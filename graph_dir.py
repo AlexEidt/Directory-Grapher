@@ -196,6 +196,6 @@ if __name__ == '__main__':
     # whatever code you need. Example function call for creating a graph is
     # shown below:
     #
-    # main(directory_name, orientation=orientation, data=True, show_files=True, git=False)
+    # main(directory, orientation='LR', data=False, show_files=True, show_hidden=False, max_depth=-1)
 
     introduction()
