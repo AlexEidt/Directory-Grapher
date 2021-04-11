@@ -4,7 +4,27 @@ Create acyclic directed graphs representing any directory of your choosing.
 
 ## Usage
 
-Run `graph_dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen.
+Run `graph_dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen. You can run it from the command line or via the console.
+
+```
+usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] dir
+
+Visualizes directory structure with graphs.
+
+positional arguments:
+  dir         Directory Name.
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -i          Use console interface instead of command line args.
+  -d D        Visualization Depth.
+  -hidden     Include hidden directories (starting witih "." or "__").
+  -m          Show number of files/dirs and memory use.
+  -f          Show files in each directory.
+  -o O        Graph orientation. Either TB, BT, LR, RL.
+```
+
+The console interface looks like this:
 
 ```
 cd DIRECTORY_LOCATION_HERE

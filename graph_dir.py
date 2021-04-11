@@ -8,6 +8,7 @@ that is in the same directory as this script.
 
 import os
 import json
+import argparse
 from graphviz import Digraph
 
 # Change PATH setup for Graphviz directory here:
@@ -191,6 +192,30 @@ def introduction():
     print(f'\nThe directory graph ({directory_name}_Graph.png) has been created in this directory.')
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Visualizes directory structure with graphs.')
+    parser.add_argument('dir', help='Directory Name.')
+    parser.add_argument('-i', required=False, help='Use console interface instead of command line args.', action='store_true')
+    parser.add_argument('-d', required=False, help='Visualization Depth.')
+    parser.add_argument('-hidden', required=False, help='Include hidden directories (starting witih "." or "__").', action='store_true')
+    parser.add_argument('-m', required=False, help="Show number of files/dirs and memory use.", action='store_true')
+    parser.add_argument('-f', required=False, help='Show files in each directory.', action='store_true')
+    parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL.')
+
+    args = parser.parse_args()
+    if not args.i:
+        main(
+            args.dir,
+            orientation=args.o if args.o else 'TB',
+            data=bool(args.m),
+            show_files=bool(args.f),
+            show_hidden=bool(args.hidden),
+            max_depth=int(args.d) if args.d else -1
+        )
+    else:
+        introduction()
+    
+
 if __name__ == '__main__':
     # Feel free to remove the introduction() function call and replace with
     # whatever code you need. Example function call for creating a graph is
@@ -198,4 +223,4 @@ if __name__ == '__main__':
     #
     # main(directory, orientation='LR', data=False, show_files=True, show_hidden=False, max_depth=-1)
 
-    introduction()
+    parse_args()
