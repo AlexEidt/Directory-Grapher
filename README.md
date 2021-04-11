@@ -7,6 +7,13 @@ Create acyclic directed graphs representing any directory of your choosing.
 Run `graph_dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen. You can run it from the command line or via the console.
 
 ```
+cd DIRECTORY_LOCATION_HERE
+python graph_dir.py
+```
+
+The command line arguments are shown below.
+
+```
 usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] dir
 
 Visualizes directory structure with graphs.
@@ -25,13 +32,6 @@ optional arguments:
 ```
 
 The console interface looks like this:
-
-```
-cd DIRECTORY_LOCATION_HERE
-python graph_dir.py
-```
-
-Once you enter the command above you'll see several prompts. An example is shown below when `graph_dir.py` is run in this directory.
 
 ```
 Welcome to the Directory Grapher!
