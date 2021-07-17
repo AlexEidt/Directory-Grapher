@@ -16,6 +16,9 @@ from graphviz import Digraph
 os.environ['PATH'] += os.pathsep + 'C:\\Graphviz\\bin'
 # ---------------------------------------------------------------------- #
 
+# Image Format. png, jpg, svg
+FORMAT = 'png'
+
 
 def convert(size):
     """
@@ -152,7 +155,7 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
             tree.node(id_, label=file_node)
             tree.edge(root, id_)
 
-    tree.render(f'{directory}_Graph', view=True, format='png')
+    tree.render(f'{directory}_Graph', view=True, format=FORMAT)
     os.remove(f'{directory}_Graph')
 
 
