@@ -130,7 +130,7 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
             directory_data += f'{len(dirs)} Folder{multiple(len(dirs))}\l'
         if data and files:
             directory_data += f'{len(files)} File{multiple(len(files))}'
-            if not show_files:
+            if not show_files and dirs:
                 directory_data += f' ({file_memory})'
             directory_data += '\l'
 
