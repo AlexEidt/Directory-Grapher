@@ -16,8 +16,12 @@ from graphviz import Digraph
 os.environ['PATH'] += os.pathsep + 'C:\\Graphviz\\bin'
 # ---------------------------------------------------------------------- #
 
-# Image Format. png, jpg, svg
+# Image Format. png, svg
 FORMAT = 'png'
+# Distance between "layers" of directories in inches. Must be float.
+# If default rank separation is desired, set RANKSEP = None.
+RANKSEP = None
+assert type(RANKSEP) is float or RANKSEP is None, 'RANKSEP must be float or None'
 
 
 def convert(size):
@@ -96,9 +100,11 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
     assert orientation.upper() in options, f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
     del options
 
-    tree = Digraph(
-        graph_attr = {'rankdir': orientation.upper(), 'overlap': 'scale'},
-    )
+    options = {'rankdir': orientation.upper(), 'overlap': 'scale', 'splines': 'polyline'}
+    if RANKSEP is not None:
+        options['ranksep'] = str(RANKSEP)
+
+    tree = Digraph(graph_attr = options)
     index = 0
     multiple = lambda l: '' if l == 1 else 's'
 
