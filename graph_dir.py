@@ -10,21 +10,15 @@ import os
 import json
 import argparse
 from graphviz import Digraph
+from typing import Union
 
 # Change PATH setup for Graphviz directory here:
 # --------------------------GRAPHVIZ PATH SETUP------------------------- #
 os.environ['PATH'] += os.pathsep + 'C:\\Graphviz\\bin'
 # ---------------------------------------------------------------------- #
 
-# Image Format. png, svg
-FORMAT = 'png'
-# Distance between "layers" of directories in inches. Must be float.
-# If default rank separation is desired, set RANKSEP = None.
-RANKSEP = None
-assert type(RANKSEP) is float or RANKSEP is None, 'RANKSEP must be float or None'
 
-
-def convert(size):
+def convert(size: int) -> str:
     """
     Converts the given "size" into its corresponding bytes representation
     rounded to two decimal places.
@@ -42,7 +36,7 @@ def convert(size):
     return f'{round(size, 2)} {suffix}'
 
 
-def size(path):
+def size(path: str) -> dict:
     """
     Recursively calculates the size of all files in the given "path"
     directory in an efficient way by starting at the bottom of the directory
@@ -67,42 +61,48 @@ def size(path):
     return file_sizes
 
 
-def main(directory, orientation='LR', data=False, show_files=True, show_hidden=False, max_depth=-1):
+def main(
+    directory:      str,
+    orientation:    str = 'LR',
+    data:           bool = False,
+    show_files:     bool = True,
+    show_hidden:    bool = False,
+    max_depth:      int = -1,
+    ranksep:        Union[float, None] = None,
+    file_type:      str = 'svg'
+) -> None:
     """
     Creates an acyclic directed adjacency graph of the given directory.
 
-    file_name: The name of the png file that will store the graph
-               representing the directory. Default is the parent directory
-               name.
-
-    directory: The directory to generate the graph for. Default is '.'.
-            Throws AssertionError if directory is not in the current directory.
-
-    orientation: Which direction the graph should be drawn in. Options:
-                 -LR: Left to Right
-                 -RL: Right to Left
-                 -TB: Top to Bottom
-                 -BT: Bottom to Top
-                 Throws AssertionError if "orientation" value is not one of the above.
-    
-    data: If True, shows memory used for each directory and all files in a directory.
-
-    show_files: If True, shows files that are part of the directory.
-
-    show_hidden: If True, include hidden directories/objects in the visualization.
-
-    max_depth: The maximum length of the directory "tree" branches that are created. Useful for
-               large directories with many levels of subfolders if you want to limit the
-               visualization to only the first few layers.
+    file_name:      The name of the png file that will store the graph
+                    representing the directory. Default is the parent directory
+                    name.
+    directory:      The directory to generate the graph for. Default is '.'.
+                    Throws AssertionError if directory is not in the current directory.
+    orientation:    Which direction the graph should be drawn in. Options:
+                        -LR: Left to Right
+                        -RL: Right to Left
+                        -TB: Top to Bottom
+                        -BT: Bottom to Top
+                    Throws AssertionError if "orientation" value is not one of the above.
+    data:           If True, shows memory used for each directory and all files in a directory.
+    show_files:     If True, shows files that are part of the directory.
+    show_hidden:    If True, include hidden directories/objects in the visualization.
+    max_depth:      The maximum length of the directory "tree" branches that are created. Useful for
+                    large directories with many levels of subfolders if you want to limit the
+                    visualization to only the first few layers.
+    ranksep:        Distance between "layers" of directories in inches.
+    file_type:      File type to render graph as.
     """
     assert directory in os.listdir(), f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ['LR', 'RL', 'TB', 'BT']
     assert orientation.upper() in options, f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
     del options
+    assert file_type in ['svg', 'png'], 'Invalid argument for "file_type". Must be either "png" or "svg"'
 
     options = {'rankdir': orientation.upper(), 'overlap': 'scale', 'splines': 'polyline'}
-    if RANKSEP is not None:
-        options['ranksep'] = str(RANKSEP)
+    if ranksep is not None:
+        options['ranksep'] = str(ranksep)
 
     tree = Digraph(graph_attr = options)
     index = 0
@@ -161,11 +161,11 @@ def main(directory, orientation='LR', data=False, show_files=True, show_hidden=F
             tree.node(id_, label=file_node)
             tree.edge(root, id_)
 
-    tree.render(f'{directory}_Graph', view=True, format=FORMAT)
+    tree.render(f'{directory}_Graph', view=True, format=file_type)
     os.remove(f'{directory}_Graph')
 
 
-def introduction():
+def introduction() -> None:
     """
     Introduces the user to the program on the command line and helps them customize their
     parameters for creating the graph.
@@ -188,6 +188,8 @@ def introduction():
     hidden = input('Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): ').lower()
     data = input('Show number of files/directories and memory use for each directory? (y/n): ').lower()
     show_files = input('Show files in each directory? (y/n): ').lower()
+    file_type = input('File Type (png or svg): ').lower()
+    ranksep = input('Distance between "layers" of directories in inches (Enter/Return for Default): ')
     print('How should the graph be oriented? ')
     print('Top -> Bottom: TB\nBottom -> Top: BT\nLeft -> Right: LR\nRight -> Left: RL')
     orientation = input('Choose one of the options above and enter here: ').upper()
@@ -195,13 +197,21 @@ def introduction():
     while orientation not in ['TB', 'BT', 'LR', 'RL']:
         orientation = input('Invalid orientation. Please enter again: ')
 
-    main(directory_name, orientation=orientation, data=(data == 'y'), show_files=(show_files == 'y'),
-        show_hidden=(hidden == 'y'), max_depth=int(depth) if depth else -1)
+    main(
+        directory_name,
+        orientation=orientation,
+        data=data == 'y',
+        show_files=show_files == 'y',
+        show_hidden=hidden == 'y',
+        max_depth=int(depth) if depth else -1,
+        ranksep=float(ranksep) if ranksep else None,
+        file_type=file_type
+    )
 
     print(f'\nThe directory graph ({directory_name}_Graph.png) has been created in this directory.')
 
 
-def parse_args():
+def parse_args() -> None:
     parser = argparse.ArgumentParser(description='Visualizes directory structure with graphs.')
     parser.add_argument('dir', help='Directory Name.')
     parser.add_argument('-i', required=False, help='Use console interface instead of command line args.', action='store_true')
@@ -210,6 +220,8 @@ def parse_args():
     parser.add_argument('-m', required=False, help="Show number of files/dirs and memory use.", action='store_true')
     parser.add_argument('-f', required=False, help='Show files in each directory.', action='store_true')
     parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL.')
+    parser.add_argument('-rs', required=False, help='Distance between "layers" of directories in inches.')
+    parser.add_argument('-ft', required=False, help='File Format to render graph as either "svg" or "png".')
 
     args = parser.parse_args()
     if not args.i:
@@ -219,7 +231,9 @@ def parse_args():
             data=bool(args.m),
             show_files=bool(args.f),
             show_hidden=bool(args.hidden),
-            max_depth=int(args.d) if args.d else -1
+            max_depth=int(args.d) if args.d else -1,
+            ranksep=float(args.rs) if args.rs else None,
+            file_type=args.ft if args.ft and args.ft in ['png', 'svg'] else 'svg'
         )
     else:
         introduction()
@@ -230,6 +244,15 @@ if __name__ == '__main__':
     # whatever code you need. Example function call for creating a graph is
     # shown below:
     #
-    # main(directory, orientation='LR', data=False, show_files=True, show_hidden=False, max_depth=-1)
+    # main(
+    #     directory,
+    #     orientation='LR',
+    #     data=False,
+    #     show_files=True,
+    #     show_hidden=False,
+    #     max_depth=-1,
+    #     ranksep=None,
+    #     file_type='svg'
+    # )
 
     parse_args()
