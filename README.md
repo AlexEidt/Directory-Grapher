@@ -2,7 +2,11 @@
 
 Create directory graphs representing any directory of your choosing.
 
-The Directory Graph for the [Pandas](https://github.com/pandas-dev/pandas) directory is shown below:
+## Gallery
+
+To see a Gallery of directory graphs of popular repositories on GitHub, see the [Directory Grapher Wiki](https://github.com/AlexEidt/Directory-Grapher/wiki).
+
+The Directory Graph for the [Pandas](https://github.com/pandas-dev/pandas) directory is shown below.
 
 <img src="Documentation/GitHub-Repos/pandas_Graph.svg" alt="Golang GitHub Repository Directory Graph">
 
