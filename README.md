@@ -2,6 +2,10 @@
 
 Create directory graphs representing any directory of your choosing.
 
+The Directory Graph for the [Pandas](https://github.com/pandas-dev/pandas) directory is shown below:
+
+<img src="Documentation/GitHub-Repos/pandas_Graph.svg" alt="Golang GitHub Repository Directory Graph">
+
 ## Usage
 
 Run `graph_dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen. You can run it from the command line or via the console.
