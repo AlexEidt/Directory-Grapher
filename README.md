@@ -1,6 +1,6 @@
 # Directory Grapher
 
-Create acyclic directed graphs representing any directory of your choosing.
+Create directory graphs representing any directory of your choosing.
 
 ## Usage
 
@@ -14,7 +14,7 @@ python graph_dir.py
 The command line arguments are shown below.
 
 ```
-usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] dir
+usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] dir
 
 Visualizes directory structure with graphs.
 
@@ -29,6 +29,8 @@ optional arguments:
   -m          Show number of files/dirs and memory use.
   -f          Show files in each directory.
   -o O        Graph orientation. Either TB, BT, LR, RL.
+  -rs RS      Distance between "layers" of directories in inches.
+  -ft FT      File Format to render graph as either "svg" or "png".
 ```
 
 The console interface looks like this:
@@ -47,6 +49,8 @@ Enter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit):
 Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): n
 Show number of files/directories and memory use for each directory? (y/n): y
 Show files in each directory? (y/n): y
+File Type (png or svg): svg
+Distance between "layers" of directories in inches (Enter/Return for Default):
 How should the graph be oriented? 
 Top -> Bottom: TB
 Bottom -> Top: BT
@@ -91,10 +95,19 @@ Note that if you enter a depth that is greater than the total levels in the dire
 
 ## Documentation
 
-In order to create the directory graphs call the `main` function in `graph_dir.py`:
+In order to create the directory graphs call the `main` function in `graph_dir.py` and fill in the variable names with the desired parameters.
 
 ```python
-main(directory_name, orientation=orientation, data=data, show_files=show_files, show_hidden=show_hidden)
+main(
+    directory_name,
+    orientation=orientation,
+    data=data,
+    show_files=show_files,
+    show_hidden=show_hidden,
+    max_depth=max_depth,
+    ranksep=ranksep,
+    file_type=file_type
+)
 ```
 
 ### Arguments
@@ -107,6 +120,8 @@ Argument | Default | Description
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
 `show_hidden` | `False` | If `True` include hidden directories (those starting with `__` or `.`) and their contents in the visualization. If `False`, do not show any hidden directories.
 `max_depth` | `-1` | If this value is negative or `0`, the entire directory structure will be visualized. Otherwise, the directory depth will stop at a the value passed in by the user. I.e, if the user passes in `1` as the `max_depth`, then the visualization will only show the immediate files and folders inside of the root folder and none of the subfolders. This is useful for large directories with many levels of subfolders that would be incomprehensibly small on a visualization. In such a case, limiting the directory depth will make visuals much cleaner and easier to look at.
+`ranksep` | `None` | Distance between "layers" of directories in inches.
+`file_type` | `svg` | File type to render graph as.
 
 ## Dependecies
 
