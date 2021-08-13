@@ -4,7 +4,7 @@ Create directory graphs representing any directory of your choosing.
 
 ## Gallery
 
-To see a Gallery of directory graphs of popular repositories on GitHub, see the [Directory Grapher Wiki](https://github.com/AlexEidt/Directory-Grapher/wiki).
+To see a Gallery of directory graphs of popular repositories on GitHub, see the [Directory Grapher Wiki](https://github.com/AlexEidt/Directory-Grapher/wiki) or check out the corresponding [Youtube Video](https://www.youtube.com/watch?v=zlxg3gx0A_0).
 
 The Directory Graph for the [Pandas](https://github.com/pandas-dev/pandas) directory is shown below.
 
