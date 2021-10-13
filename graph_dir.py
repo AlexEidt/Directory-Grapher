@@ -61,7 +61,7 @@ def size(path: str) -> dict:
     return file_sizes
 
 
-def main(
+def graph_dir(
     directory:      str,
     orientation:    str = 'LR',
     data:           bool = False,
@@ -97,7 +97,6 @@ def main(
     assert directory in os.listdir(), f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ['LR', 'RL', 'TB', 'BT']
     assert orientation.upper() in options, f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
-    del options
     assert file_type in ['svg', 'png'], 'Invalid argument for "file_type". Must be either "png" or "svg"'
 
     options = {'rankdir': orientation.upper(), 'overlap': 'scale', 'splines': 'polyline'}
@@ -112,35 +111,37 @@ def main(
     if data:
         dir_sizes = size(directory)
 
-    hidden = ('__', '.')
     walkdir = os.path.normpath(f'./{directory}/')
+    # directory_data is the string used to build up the text in the nodes.
+    directory_data = []
+    # file_node is the string used to build file information up the text in the nodes.
+    file_node = []
     for root, dirs, files in os.walk(walkdir):
         if max_depth > 0 and root.count(os.sep) >= max_depth:
             continue
         if not show_hidden:
-            dirs[:] = [dir_ for dir_ in dirs if not dir_.startswith(hidden)]
+            dirs[:] = [dir_ for dir_ in dirs if not dir_.startswith(('__', '.'))]
         tree.attr('node', shape='folder', fillcolor='lemonchiffon', style='filled,bold')
 
-        # \l left aligns items in their container
-        parent_directory = root
-        if root == '.':
-            parent_directory = directory
-        directory_data = os.path.basename(parent_directory)
+        parent_directory = directory if root == '.' else root
+        directory_data.clear()
+        directory_data.extend(os.path.basename(parent_directory))
         
-        # Display directory data if parameters permit
         file_memory = convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))
+        # Display directory data if parameters permit
         if data:
-            directory_data += f' ({dir_sizes[root]})'
-        directory_data += '\l'
+            directory_data.extend(f' ({dir_sizes[root]})')
+        # \l left aligns items in their container
+        directory_data.append('\l')
         if data and dirs:
-            directory_data += f'{len(dirs)} Folder{multiple(len(dirs))}\l'
+            directory_data.extend(f'{len(dirs)} Folder{multiple(len(dirs))}\l')
         if data and files:
-            directory_data += f'{len(files)} File{multiple(len(files))}'
+            directory_data.extend(f'{len(files)} File{multiple(len(files))}')
             if not show_files and dirs:
-                directory_data += f' ({file_memory})'
-            directory_data += '\l'
+                directory_data.extend(f' ({file_memory})')
+            directory_data.append('\l')
 
-        tree.node(root, label=directory_data)
+        tree.node(root, label=''.join(directory_data))
         for dir_ in dirs:
             path = os.path.join(root, dir_)
             tree.node(path, label=dir_)
@@ -151,21 +152,20 @@ def main(
             tree.attr('node', shape='box', style='')
             # Display files in a box on the graph as well as memory information
             # if parameters permit
-            file_list = '\l'.join(files) + '\l'
-            file_node = ''
             if data:
-                file_node = f'{len(files)} File{multiple(len(files))}'
-                file_node += f' ({file_memory})\l'
-            file_node += file_list
-            id_ = f'{index}{file_node}'
-            tree.node(id_, label=file_node)
+                file_node.extend(f'{len(files)} File{multiple(len(files))} ({file_memory})\l')
+            file_node.extend(('\l'.join(files), '\l'))
+            file_node_str = ''.join(file_node)
+            file_node.clear()
+            id_ = f'{index}{file_node_str}'
+            tree.node(id_, label=file_node_str)
             tree.edge(root, id_)
 
     tree.render(f'{directory}_Graph', view=True, format=file_type)
     os.remove(f'{directory}_Graph')
 
 
-def introduction() -> None:
+def introduction():
     """
     Introduces the user to the program on the command line and helps them customize their
     parameters for creating the graph.
@@ -180,7 +180,6 @@ def introduction() -> None:
     directory_name = input('directory Name: ')
     while directory_name not in valid:
         directory_name = input(f'{directory_name} is not in the directory. Please enter a new directory name: ')
-    del valid
 
     depth = input('\nEnter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit): ')
     while depth and not depth.isdigit():
@@ -197,7 +196,7 @@ def introduction() -> None:
     while orientation not in ['TB', 'BT', 'LR', 'RL']:
         orientation = input('Invalid orientation. Please enter again: ')
 
-    main(
+    graph_dir(
         directory_name,
         orientation=orientation,
         data=data == 'y',
@@ -211,7 +210,7 @@ def introduction() -> None:
     print(f'\nThe directory graph ({directory_name}_Graph.png) has been created in this directory.')
 
 
-def parse_args() -> None:
+def main():
     parser = argparse.ArgumentParser(description='Visualizes directory structure with graphs.')
     parser.add_argument('dir', help='Directory Name.')
     parser.add_argument('-i', required=False, help='Use console interface instead of command line args.', action='store_true')
@@ -225,7 +224,7 @@ def parse_args() -> None:
 
     args = parser.parse_args()
     if not args.i:
-        main(
+        graph_dir(
             args.dir,
             orientation=args.o if args.o else 'TB',
             data=bool(args.m),
@@ -244,7 +243,7 @@ if __name__ == '__main__':
     # whatever code you need. Example function call for creating a graph is
     # shown below:
     #
-    # main(
+    # graph_dir(
     #     directory,
     #     orientation='LR',
     #     data=False,
@@ -255,4 +254,4 @@ if __name__ == '__main__':
     #     file_type='svg'
     # )
 
-    parse_args()
+    main()
