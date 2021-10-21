@@ -103,10 +103,10 @@ Note that if you enter a depth that is greater than the total levels in the dire
 
 ## Documentation
 
-In order to create the directory graphs call the `main` function in `graph_dir.py` and fill in the variable names with the desired parameters.
+In order to create the directory graphs call the `graph_dir` function in `graph_dir.py` and fill in the variable names with the desired parameters.
 
 ```python
-main(
+graph_dir(
     directory_name,
     orientation=orientation,
     data=data,
