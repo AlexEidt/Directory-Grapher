@@ -63,6 +63,7 @@ def size(path: str) -> dict:
 
 def graph_dir(
     directory:      str,
+    filename:       str = '',
     orientation:    str = 'LR',
     data:           bool = False,
     show_files:     bool = True,
@@ -75,11 +76,11 @@ def graph_dir(
     """
     Creates an acyclic directed adjacency graph of the given directory.
 
-    file_name:      The name of the png file that will store the graph
-                    representing the directory. Default is the parent directory
-                    name.
     directory:      The directory to generate the graph for. Default is '.'.
                     Throws AssertionError if directory is not in the current directory.
+    filename:       The name of the file that will store the graph
+                    representing the directory. Default is the parent directory
+                    name.
     orientation:    Which direction the graph should be drawn in. Options:
                         -LR: Left to Right
                         -RL: Right to Left
@@ -168,13 +169,14 @@ def graph_dir(
             tree.node(id_, label=file_node_str)
             tree.edge(root, id_)
 
+    filename = filename.rsplit('.', 1)[0] if filename else f'{directory}_Graph'
     if not render:
-        tree.render(f'{directory}_Graph', format=file_type)
-        os.remove(f'{directory}_Graph')
+        tree.render(filename, format=file_type)
+        os.remove(filename)
     else:
         if file_type == 'png':
             url = f'https://quickchart.io/graphviz?format={file_type}&graph={tree.source}'
-            with open(f'{directory}_Graph.{file_type}', mode='wb') as f:
+            with open(f'{filename}.{file_type}', mode='wb') as f:
                 f.write(requests.get(url).content)
         else:
             url = f'https://quickchart.io/graphviz?graph={tree.source}'
@@ -183,18 +185,19 @@ def graph_dir(
             if '<svg' not in src and '</svg>' not in src:
                 print('Error rendering graph with quickchart.io.')
             else:
-                with open(f'{directory}_Graph.svg', mode='w') as f:
+                with open(f'{filename}.svg', mode='w') as f:
                     f.write(src)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Visualizes directory structure with graphs.')
     parser.add_argument('dir', help='Directory Name.')
+    parser.add_argument('-o', required=False, help='Output file name.')
     parser.add_argument('-d', required=False, help='Visualization Depth. Default -1.')
     parser.add_argument('-hidden', required=False, help='Include hidden directories (starting witih "." or "__").', action='store_true')
     parser.add_argument('-m', required=False, help="Show number of files/dirs and memory use.", action='store_true')
     parser.add_argument('-f', required=False, help='Show files in each directory.', action='store_true')
-    parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL. Default TB.')
+    parser.add_argument('-ot', required=False, help='Graph orientation. Either TB, BT, LR, RL. Default TB.')
     parser.add_argument('-rs', required=False, help='Distance between "layers" of directories in inches.')
     parser.add_argument('-ft', required=False, help='File Format to render graph as either "svg" or "png". Default "svg".')
     parser.add_argument('-r', required=False, help='Render graph online via the quickchart.io API.', action='store_true')
@@ -203,7 +206,8 @@ def main():
 
     graph_dir(
         args.dir,
-        orientation=args.o if args.o else 'TB',
+        filename=args.o,
+        orientation=args.ot if args.ot else 'TB',
         data=bool(args.m),
         show_files=bool(args.f),
         show_hidden=bool(args.hidden),

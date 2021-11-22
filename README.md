@@ -22,7 +22,7 @@ python dir.py
 The command line arguments are shown below.
 
 ```
-usage: dir.py [-h] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] [-r] dir
+usage: dir.py [-h] [-o O] [-d D] [-hidden] [-m] [-f] [-ot OT] [-rs RS] [-ft FT] [-r] dir
 
 Visualizes directory structure with graphs.
 
@@ -31,11 +31,12 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+  -o O        Output file name.
   -d D        Visualization Depth. Default -1.
   -hidden     Include hidden directories (starting witih "." or "__").
   -m          Show number of files/dirs and memory use.
   -f          Show files in each directory.
-  -o O        Graph orientation. Either TB, BT, LR, RL. Default TB.
+  -ot OT      Graph orientation. Either TB, BT, LR, RL. Default TB.
   -rs RS      Distance between "layers" of directories in inches.
   -ft FT      File Format to render graph as either "svg" or "png". Default "svg".
   -r          Render graph online via the quickchart.io API.
