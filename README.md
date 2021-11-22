@@ -22,7 +22,7 @@ python graph_dir.py
 The command line arguments are shown below.
 
 ```
-usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] dir
+usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] [-r R] dir
 
 Visualizes directory structure with graphs.
 
@@ -39,37 +39,8 @@ optional arguments:
   -o O        Graph orientation. Either TB, BT, LR, RL.
   -rs RS      Distance between "layers" of directories in inches.
   -ft FT      File Format to render graph as either "svg" or "png".
+  -r R        Render graph as file or online via an API.
 ```
-
-The console interface looks like this:
-
-```
-Welcome to the Directory Grapher!
-
-Enter a directory name that is in this directory. Valid directory names are given below:
-         .git
-         .vscode
-         Demo
-         Documentation
-directory Name: Demo
-
-Enter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit):
-Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): n
-Show number of files/directories and memory use for each directory? (y/n): y
-Show files in each directory? (y/n): y
-File Type (png or svg): svg
-Distance between "layers" of directories in inches (Enter/Return for Default):
-How should the graph be oriented? 
-Top -> Bottom: TB
-Bottom -> Top: BT
-Left -> Right: LR
-Right -> Left: RL
-Choose one of the options above and enter here: LR
-
-The directory graph (Demo_Graph.png) has been created in this directory.
-```
-
-As you'll see in the log above, there are several options to customize the graph that is created. It's possible to show data for each directory (the number of sub-directories and files in that directory, as well as the memory use of each file and directory). The user may also choose to show or hide the files in each directory. The user may also choose the orientation of the graph, whether it should start at the bottom and go up, start at the top and go down, start left and go right, or start right and go left. The user can also limit the directory depth for visualization, which may be useful for large directories with many levels of subdirectories.
 
 ### Options
 
@@ -114,7 +85,8 @@ graph_dir(
     show_hidden=show_hidden,
     max_depth=max_depth,
     ranksep=ranksep,
-    file_type=file_type
+    file_type=file_type,
+    render=render
 )
 ```
 
@@ -129,15 +101,17 @@ Argument | Default | Description
 `show_hidden` | `False` | If `True` include hidden directories (those starting with `__` or `.`) and their contents in the visualization. If `False`, do not show any hidden directories.
 `max_depth` | `-1` | If this value is negative or `0`, the entire directory structure will be visualized. Otherwise, the directory depth will stop at a the value passed in by the user. I.e, if the user passes in `1` as the `max_depth`, then the visualization will only show the immediate files and folders inside of the root folder and none of the subfolders. This is useful for large directories with many levels of subfolders that would be incomprehensibly small on a visualization. In such a case, limiting the directory depth will make visuals much cleaner and easier to look at.
 `ranksep` | `None` | Distance between "layers" of directories in inches.
-`file_type` | `svg` | File type to render graph as.
+`file_type` | `'svg'` | File type to render graph as.
+`render` | `True` | If `True` render graph using GraphViz, otherwise will use the `quickchart.io` API. Useful if you do not want to install the GraphViz binaries.
 
 ## Dependecies
 
 * [Python 3.7+](https://www.python.org/)
 * [GraphViz](https://graphviz.gitlab.io/download/)
+* [Requests](https://docs.python-requests.org/en/latest/)
 
 ```
-pip3 install graphviz
+pip3 install graphviz requests
 ```
 
 ## GraphViz Note

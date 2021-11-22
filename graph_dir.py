@@ -7,8 +7,9 @@ that is in the same directory as this script.
 
 
 import os
-import json
+import re
 import argparse
+import requests
 from graphviz import Digraph
 from typing import Union
 
@@ -69,7 +70,8 @@ def graph_dir(
     show_hidden:    bool = False,
     max_depth:      int = -1,
     ranksep:        Union[float, None] = None,
-    file_type:      str = 'svg'
+    file_type:      str = 'svg',
+    render:         bool = True
 ) -> None:
     """
     Creates an acyclic directed adjacency graph of the given directory.
@@ -93,11 +95,16 @@ def graph_dir(
                     visualization to only the first few layers.
     ranksep:        Distance between "layers" of directories in inches.
     file_type:      File type to render graph as.
+    render:         If True, render the graph as the format specified by "file_type". Otherwise,
+                    use the quickchart.io API to generate a graph. Useful if you don't want to install Graphviz.
     """
-    assert directory in os.listdir(), f'Invalid argument for "directory". {directory} is not in the current directory'
+    assert directory in os.listdir(), \
+        f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ['LR', 'RL', 'TB', 'BT']
-    assert orientation.upper() in options, f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
-    assert file_type in ['svg', 'png'], 'Invalid argument for "file_type". Must be either "png" or "svg"'
+    assert orientation.upper() in options, \
+        f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
+    assert file_type in ['svg', 'png'], \
+        'Invalid argument for "file_type". Must be either "png" or "svg"'
 
     options = {'rankdir': orientation.upper(), 'overlap': 'scale', 'splines': 'polyline'}
     if ranksep is not None:
@@ -141,9 +148,10 @@ def graph_dir(
                 directory_data.extend(f' ({file_memory})')
             directory_data.append('\l')
 
+        root = root.replace(os.sep, '')
         tree.node(root, label=''.join(directory_data))
         for dir_ in dirs:
-            path = os.path.join(root, dir_)
+            path = os.path.join(root, dir_).replace(os.sep, '')
             tree.node(path, label=dir_)
             tree.edge(root, path)
 
@@ -157,12 +165,17 @@ def graph_dir(
             file_node.extend(('\l'.join(files), '\l'))
             file_node_str = ''.join(file_node)
             file_node.clear()
-            id_ = f'{index}{file_node_str}'
+            id_ = f'{index}{file_node_str}'.replace(os.sep, '')
             tree.node(id_, label=file_node_str)
             tree.edge(root, id_)
 
-    tree.render(f'{directory}_Graph', view=True, format=file_type)
-    os.remove(f'{directory}_Graph')
+    if render:
+        tree.render(f'{directory}_Graph', view=True, format=file_type)
+        os.remove(f'{directory}_Graph')
+    else:
+        with open(f'{directory}_Graph.svg', mode='w') as f:
+            src = requests.get(f'https://quickchart.io/graphviz?graph={tree.source}').text
+            f.write(src)
 
 
 def introduction():
@@ -221,6 +234,7 @@ def main():
     parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL.')
     parser.add_argument('-rs', required=False, help='Distance between "layers" of directories in inches.')
     parser.add_argument('-ft', required=False, help='File Format to render graph as either "svg" or "png".')
+    parser.add_argument('-r', required=False, help='Render graph as file or online via an API.')
 
     args = parser.parse_args()
     if not args.i:
