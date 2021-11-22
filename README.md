@@ -73,28 +73,12 @@ Note that all combinations of parameters with all combinations of orientations a
 Note that if you enter a depth that is greater than the total levels in the directory, all levels will be visualized.
 
 ## Documentation
-
-In order to create the directory graphs call the `graph_dir` function in `dir.py` and fill in the variable names with the desired parameters.
-
-```python
-graph_dir(
-    directory_name,
-    orientation=orientation,
-    data=data,
-    show_files=show_files,
-    show_hidden=show_hidden,
-    max_depth=max_depth,
-    ranksep=ranksep,
-    file_type=file_type,
-    render=render
-)
-```
-
 ### Arguments
 
 Argument | Default | Description
 --- | --- | ---
-`directory_name` | N/A | The name of the directory you'd like to create a graph for. Directory must be present in the same directory as the `dir.py` script or else an `AssertionError` will be thrown.
+`directory` | N/A | The name of the directory you'd like to create a graph for. Directory must be present in the same directory as the `dir.py` script or else an `AssertionError` will be thrown.
+`filename` | `''` | The name of the output file. Defaults to `'{directory}_Graph.{format}'`.
 `orientation` | `'LR'` | The orientation of the graph. Must be either `'LR'`, `'RL'`, `'BT'`, or `'TB'`. If `orientation` is none of those values, an `AssertionError` is thrown.
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
