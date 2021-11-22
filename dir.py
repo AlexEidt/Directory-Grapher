@@ -7,7 +7,6 @@ that is in the same directory as this script.
 
 
 import os
-import re
 import argparse
 import requests
 from graphviz import Digraph
@@ -170,7 +169,7 @@ def graph_dir(
             tree.edge(root, id_)
 
     if render:
-        tree.render(f'{directory}_Graph', view=True, format=file_type)
+        tree.render(f'{directory}_Graph', format=file_type)
         os.remove(f'{directory}_Graph')
     else:
         with open(f'{directory}_Graph.svg', mode='w') as f:
@@ -178,94 +177,32 @@ def graph_dir(
             f.write(src)
 
 
-def introduction():
-    """
-    Introduces the user to the program on the command line and helps them customize their
-    parameters for creating the graph.
-    """
-    print('Welcome to the Directory Grapher!\n')
-    print('Enter a directory name that is in this directory. Valid directory names are given below: ')
-    valid = set()
-    for directory in os.listdir():
-        if os.path.isdir(directory):
-            print('\t', directory)
-            valid.add(directory)
-    directory_name = input('directory Name: ')
-    while directory_name not in valid:
-        directory_name = input(f'{directory_name} is not in the directory. Please enter a new directory name: ')
-
-    depth = input('\nEnter Maximum Directory Depth. Must be an integer. (Enter/Return for no limit): ')
-    while depth and not depth.isdigit():
-        depth = input('Invalid Depth value. Must be an integer. Please enter again (Enter/Return for no limit): ')
-    hidden = input('Would you like to include hidden directories (starting with "." or "__") in the visualization? (y/n): ').lower()
-    data = input('Show number of files/directories and memory use for each directory? (y/n): ').lower()
-    show_files = input('Show files in each directory? (y/n): ').lower()
-    file_type = input('File Type (png or svg): ').lower()
-    ranksep = input('Distance between "layers" of directories in inches (Enter/Return for Default): ')
-    print('How should the graph be oriented? ')
-    print('Top -> Bottom: TB\nBottom -> Top: BT\nLeft -> Right: LR\nRight -> Left: RL')
-    orientation = input('Choose one of the options above and enter here: ').upper()
-
-    while orientation not in ['TB', 'BT', 'LR', 'RL']:
-        orientation = input('Invalid orientation. Please enter again: ')
-
-    graph_dir(
-        directory_name,
-        orientation=orientation,
-        data=data == 'y',
-        show_files=show_files == 'y',
-        show_hidden=hidden == 'y',
-        max_depth=int(depth) if depth else -1,
-        ranksep=float(ranksep) if ranksep else None,
-        file_type=file_type
-    )
-
-    print(f'\nThe directory graph ({directory_name}_Graph.png) has been created in this directory.')
-
-
 def main():
     parser = argparse.ArgumentParser(description='Visualizes directory structure with graphs.')
     parser.add_argument('dir', help='Directory Name.')
-    parser.add_argument('-i', required=False, help='Use console interface instead of command line args.', action='store_true')
-    parser.add_argument('-d', required=False, help='Visualization Depth.')
+    parser.add_argument('-d', required=False, help='Visualization Depth. Default -1.')
     parser.add_argument('-hidden', required=False, help='Include hidden directories (starting witih "." or "__").', action='store_true')
     parser.add_argument('-m', required=False, help="Show number of files/dirs and memory use.", action='store_true')
     parser.add_argument('-f', required=False, help='Show files in each directory.', action='store_true')
-    parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL.')
+    parser.add_argument('-o', required=False, help='Graph orientation. Either TB, BT, LR, RL. Default TB.')
     parser.add_argument('-rs', required=False, help='Distance between "layers" of directories in inches.')
-    parser.add_argument('-ft', required=False, help='File Format to render graph as either "svg" or "png".')
-    parser.add_argument('-r', required=False, help='Render graph as file or online via an API.')
+    parser.add_argument('-ft', required=False, help='File Format to render graph as either "svg" or "png". Default "svg".')
+    parser.add_argument('-r', required=False, help='Render graph online via the quickchart.io API.', action='store_true')
 
     args = parser.parse_args()
-    if not args.i:
-        graph_dir(
-            args.dir,
-            orientation=args.o if args.o else 'TB',
-            data=bool(args.m),
-            show_files=bool(args.f),
-            show_hidden=bool(args.hidden),
-            max_depth=int(args.d) if args.d else -1,
-            ranksep=float(args.rs) if args.rs else None,
-            file_type=args.ft if args.ft and args.ft in ['png', 'svg'] else 'svg'
-        )
-    else:
-        introduction()
+
+    graph_dir(
+        args.dir,
+        orientation=args.o if args.o else 'TB',
+        data=bool(args.m),
+        show_files=bool(args.f),
+        show_hidden=bool(args.hidden),
+        max_depth=int(args.d) if args.d else -1,
+        ranksep=float(args.rs) if args.rs else None,
+        file_type=args.ft if args.ft and args.ft in ['png', 'svg'] else 'svg',
+        render=bool(args.r)
+    )
     
 
 if __name__ == '__main__':
-    # Feel free to remove the introduction() function call and replace with
-    # whatever code you need. Example function call for creating a graph is
-    # shown below:
-    #
-    # graph_dir(
-    #     directory,
-    #     orientation='LR',
-    #     data=False,
-    #     show_files=True,
-    #     show_hidden=False,
-    #     max_depth=-1,
-    #     ranksep=None,
-    #     file_type='svg'
-    # )
-
     main()

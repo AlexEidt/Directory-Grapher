@@ -12,17 +12,17 @@ The Directory Graph for the [Pandas](https://github.com/pandas-dev/pandas) direc
 
 ## Usage
 
-Run `graph_dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen. You can run it from the command line or via the console.
+Run `dir.py` in a directory that contains directories you'd like to visualize. Replace `DIRECTORY_LOCATION_HERE` with the file path to the directory you've chosen. You can run it from the command line or via the console.
 
 ```
 cd DIRECTORY_LOCATION_HERE
-python graph_dir.py
+python dir.py
 ```
 
 The command line arguments are shown below.
 
 ```
-usage: graph_dir.py [-h] [-i] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] [-r R] dir
+usage: dir.py [-h] [-d D] [-hidden] [-m] [-f] [-o O] [-rs RS] [-ft FT] [-r] dir
 
 Visualizes directory structure with graphs.
 
@@ -31,15 +31,14 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-  -i          Use console interface instead of command line args.
-  -d D        Visualization Depth.
+  -d D        Visualization Depth. Default -1.
   -hidden     Include hidden directories (starting witih "." or "__").
   -m          Show number of files/dirs and memory use.
   -f          Show files in each directory.
-  -o O        Graph orientation. Either TB, BT, LR, RL.
+  -o O        Graph orientation. Either TB, BT, LR, RL. Default TB.
   -rs RS      Distance between "layers" of directories in inches.
-  -ft FT      File Format to render graph as either "svg" or "png".
-  -r R        Render graph as file or online via an API.
+  -ft FT      File Format to render graph as either "svg" or "png". Default "svg".
+  -r          Render graph online via the quickchart.io API.
 ```
 
 ### Options
@@ -74,7 +73,7 @@ Note that if you enter a depth that is greater than the total levels in the dire
 
 ## Documentation
 
-In order to create the directory graphs call the `graph_dir` function in `graph_dir.py` and fill in the variable names with the desired parameters.
+In order to create the directory graphs call the `graph_dir` function in `dir.py` and fill in the variable names with the desired parameters.
 
 ```python
 graph_dir(
@@ -94,7 +93,7 @@ graph_dir(
 
 Argument | Default | Description
 --- | --- | ---
-`directory_name` | N/A | The name of the directory you'd like to create a graph for. Directory must be present in the same directory as the `graph_dir.py` script or else an `AssertionError` will be thrown.
+`directory_name` | N/A | The name of the directory you'd like to create a graph for. Directory must be present in the same directory as the `dir.py` script or else an `AssertionError` will be thrown.
 `orientation` | `'LR'` | The orientation of the graph. Must be either `'LR'`, `'RL'`, `'BT'`, or `'TB'`. If `orientation` is none of those values, an `AssertionError` is thrown.
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
@@ -116,7 +115,7 @@ pip3 install graphviz requests
 
 ## GraphViz Note
 
-In order for the visual representation with Graphviz to work, Graphviz must be downloaded. Download GraphViz here: https://graphviz.gitlab.io/download/. Once downloaded go to `graph_dir.py` and change the System Path under `GRAPHVIZ PATH SETUP`. Replace `'C:\\Graphviz\\bin'` with the path to the bin folder of the downloaded GraphViz folder.
+In order for the visual representation with Graphviz to work, Graphviz must be downloaded. Download GraphViz here: https://graphviz.gitlab.io/download/. Once downloaded go to `dir.py` and change the System Path under `GRAPHVIZ PATH SETUP`. Replace `'C:\\Graphviz\\bin'` with the path to the bin folder of the downloaded GraphViz folder.
 
 ```python
 # Change PATH setup for Graphviz directory here:
