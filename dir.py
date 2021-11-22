@@ -168,13 +168,23 @@ def graph_dir(
             tree.node(id_, label=file_node_str)
             tree.edge(root, id_)
 
-    if render:
+    if not render:
         tree.render(f'{directory}_Graph', format=file_type)
         os.remove(f'{directory}_Graph')
     else:
-        with open(f'{directory}_Graph.svg', mode='w') as f:
-            src = requests.get(f'https://quickchart.io/graphviz?graph={tree.source}').text
-            f.write(src)
+        if file_type == 'png':
+            url = f'https://quickchart.io/graphviz?format={file_type}&graph={tree.source}'
+            with open(f'{directory}_Graph.{file_type}', mode='wb') as f:
+                f.write(requests.get(url).content)
+        else:
+            url = f'https://quickchart.io/graphviz?graph={tree.source}'
+            src = requests.get(url).text
+            # If request failed no svg is sent.
+            if '<svg' not in src and '</svg>' not in src:
+                print('Error rendering graph with quickchart.io.')
+            else:
+                with open(f'{directory}_Graph.svg', mode='w') as f:
+                    f.write(src)
 
 
 def main():

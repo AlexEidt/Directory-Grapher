@@ -98,10 +98,16 @@ Argument | Default | Description
 `data` | `False` | If `True`, show number of sub-directories and files in each folder, as well as the memory use of each directory and file. If `False` display none of this information.
 `show_files` | `True` | If `True` show all files in each directory. If `False`, show no files. 
 `show_hidden` | `False` | If `True` include hidden directories (those starting with `__` or `.`) and their contents in the visualization. If `False`, do not show any hidden directories.
-`max_depth` | `-1` | If this value is negative or `0`, the entire directory structure will be visualized. Otherwise, the directory depth will stop at a the value passed in by the user. I.e, if the user passes in `1` as the `max_depth`, then the visualization will only show the immediate files and folders inside of the root folder and none of the subfolders. This is useful for large directories with many levels of subfolders that would be incomprehensibly small on a visualization. In such a case, limiting the directory depth will make visuals much cleaner and easier to look at.
+`max_depth` | `-1` | If this value is negative or `0`, the entire directory structure will be visualized. Otherwise, the directory depth will stop at a the value passed in by the user. I.e, if the user passes in `1` as the `max_depth`, then the visualization will only show the immediate files and folders inside of the root folder and none of the subfolders.
 `ranksep` | `None` | Distance between "layers" of directories in inches.
-`file_type` | `'svg'` | File type to render graph as.
+`file_type` | `'svg'` | File type to render graph as. Must be either `'svg'` or `'png'`.
 `render` | `True` | If `True` render graph using GraphViz, otherwise will use the `quickchart.io` API. Useful if you do not want to install the GraphViz binaries.
+
+## Quickchart
+
+The QuickChart.io GraphViz API documentation is here: https://quickchart.io/documentation/graphviz-api/.
+
+Quickchart may not work for larger graphs. It may also not be suitable to send your directory data over the internet either.
 
 ## Dependecies
 
