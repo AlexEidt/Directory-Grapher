@@ -174,19 +174,15 @@ def graph_dir(
         tree.render(filename, format=file_type)
         os.remove(filename)
     else:
-        if file_type == 'png':
-            url = f'https://quickchart.io/graphviz?format={file_type}&graph={tree.source}'
-            with open(f'{filename}.{file_type}', mode='wb') as f:
-                f.write(requests.get(url).content)
+        is_png = file_type == 'png'
+        url = f'https://quickchart.io/graphviz?{"format=png&" if is_png else ""}graph={tree.source}'
+        src = requests.get(url)
+        if src.ok:
+            with open(f'{filename}.{file_type}', mode='wb' if is_png else 'w') as f:
+                f.write(src.content if is_png else src.text)
         else:
-            url = f'https://quickchart.io/graphviz?graph={tree.source}'
-            src = requests.get(url).text
-            # If request failed no svg is sent.
-            if '<svg' not in src and '</svg>' not in src:
-                print('Error rendering graph with quickchart.io.')
-            else:
-                with open(f'{filename}.svg', mode='w') as f:
-                    f.write(src)
+            print('Error rendering graph with quickchart.io.')
+            print('Graph may have been too large.')
 
 
 def main():
