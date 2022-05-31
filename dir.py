@@ -14,6 +14,7 @@ import requests
 from graphviz import Digraph
 from typing import Union
 
+
 # Change PATH setup for Graphviz directory here:
 # --------------------------GRAPHVIZ PATH SETUP------------------------- #
 os.environ["PATH"] += os.pathsep + "C:\\Graphviz\\bin"
@@ -100,17 +101,10 @@ def graph_dir(
     render:         If True, render the graph as the format specified by "file_type". Otherwise,
                     use the quickchart.io API to generate a graph. Useful if you don't want to install Graphviz.
     """
-    assert (
-        directory in os.listdir()
-    ), f'Invalid argument for "directory". {directory} is not in the current directory'
+    assert (directory in os.listdir()), f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ["LR", "RL", "TB", "BT"]
-    assert (
-        orientation.upper() in options
-    ), f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
-    assert file_type in [
-        "svg",
-        "png",
-    ], 'Invalid argument for "file_type". Must be either "png" or "svg"'
+    assert (orientation.upper() in options), f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
+    assert file_type in ["svg", "png"], 'Invalid argument for "file_type". Must be either "png" or "svg"'
 
     options = {
         "rankdir": orientation.upper(),
@@ -173,9 +167,7 @@ def graph_dir(
             # Display files in a box on the graph as well as memory information
             # if parameters permit
             if data:
-                file_node.extend(
-                    f"{len(files)} File{multiple(len(files))} ({file_memory})\l"
-                )
+                file_node.extend(f"{len(files)} File{multiple(len(files))} ({file_memory})\l")
             file_node.extend(("\l".join(files), "\l"))
             file_node_str = "".join(file_node)
             file_node.clear()
@@ -200,48 +192,19 @@ def graph_dir(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Visualizes directory structure with graphs."
-    )
+    parser = argparse.ArgumentParser(description="Visualizes directory structure with graphs.")
+
     parser.add_argument("dir", help="Directory Name.")
-    parser.add_argument("-o", required=False, help="Output file name.")
-    parser.add_argument("-d", required=False, help="Visualization Depth. Default -1.")
-    parser.add_argument(
-        "-hidden",
-        required=False,
-        help='Include hidden directories (starting witih "." or "__").',
-        action="store_true",
-    )
-    parser.add_argument(
-        "-m",
-        required=False,
-        help="Show number of files/dirs and memory use.",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-f", required=False, help="Show files in each directory.", action="store_true"
-    )
-    parser.add_argument(
-        "-ot",
-        required=False,
-        help="Graph orientation. Either TB, BT, LR, RL. Default TB.",
-    )
-    parser.add_argument(
-        "-rs",
-        required=False,
-        help='Distance between "layers" of directories in inches.',
-    )
-    parser.add_argument(
-        "-ft",
-        required=False,
-        help='File Format to render graph as either "svg" or "png". Default "svg".',
-    )
-    parser.add_argument(
-        "-r",
-        required=False,
-        help="Render graph online via the quickchart.io API.",
-        action="store_true",
-    )
+
+    parser.add_argument("-o", help="Output file name.")
+    parser.add_argument("-d", help="Visualization Depth. Default -1.")
+    parser.add_argument("-hidden", help='Include hidden directories (starting witih "." or "__").', action="store_true")
+    parser.add_argument("-m", help="Show number of files/dirs and memory use.", action="store_true")
+    parser.add_argument("-f", help="Show files in each directory.", action="store_true")
+    parser.add_argument("-ot", help="Graph orientation. Either TB, BT, LR, RL. Default TB.")
+    parser.add_argument("-rs", help='Distance between "layers" of directories in inches.')
+    parser.add_argument("-ft", help='File Format to render graph as either "svg" or "png". Default "svg".')
+    parser.add_argument("-r", help="Render graph online via the quickchart.io API.", action="store_true")
 
     args = parser.parse_args()
 
