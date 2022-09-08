@@ -101,9 +101,9 @@ def graph_dir(
     render:         If True, render the graph as the format specified by "file_type". Otherwise,
                     use the quickchart.io API to generate a graph. Useful if you don't want to install Graphviz.
     """
-    assert (directory in os.listdir()), f'Invalid argument for "directory". {directory} is not in the current directory'
+    assert directory in os.listdir(), f'Invalid argument for "directory". {directory} is not in the current directory'
     options = ["LR", "RL", "TB", "BT"]
-    assert (orientation.upper() in options), f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
+    assert orientation.upper() in options, f'Invalid argument for "orientation". Must be one of {", ".join(options)}'
     assert file_type in ["svg", "png"], 'Invalid argument for "file_type". Must be either "png" or "svg"'
 
     options = {
@@ -115,32 +115,34 @@ def graph_dir(
         options["ranksep"] = str(ranksep)
 
     tree = Digraph(graph_attr=options)
+
+    # Index used to ID files in the graph.
     index = 0
+
+    # Adds an "s" to elements != 1 to pluralize them.
     multiple = lambda l: "" if l == 1 else "s"
 
     # Get data for size of each folder
     if data:
         dir_sizes = size(directory)
 
-    walkdir = os.path.normpath(f"./{directory}/")
-    # directory_data is the string used to build up the text in the nodes.
-    directory_data = []
-    # file_node is the string used to build file information up the text in the nodes.
-    file_node = []
-    for root, dirs, files in os.walk(walkdir):
+    directory_data = [] # String builder for the text in the nodes.
+    file_node = [] # String builder for the file information in the file nodes.
+    for root, dirs, files in os.walk(os.path.normpath(f"./{directory}/")):
+        # Once "max_depth" is exceeded, exit that branch.
         if max_depth > 0 and root.count(os.sep) >= max_depth:
             continue
         if not show_hidden:
+            # Remove hidden directories from "dirs".
             dirs[:] = [dir_ for dir_ in dirs if not dir_.startswith(("__", "."))]
+
         tree.attr("node", shape="folder", fillcolor="lemonchiffon", style="filled,bold")
 
         parent_directory = directory if root == "." else root
         directory_data.clear()
         directory_data.extend(os.path.basename(parent_directory))
 
-        file_memory = convert(
-            sum([os.path.getsize(os.path.join(root, f)) for f in files])
-        )
+        file_memory = convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))
         # Display directory data if parameters permit
         if data:
             directory_data.extend(f" ({dir_sizes[root]})")
@@ -161,19 +163,22 @@ def graph_dir(
             tree.node(path, label=dir_)
             tree.edge(root, path)
 
+        # If "show_files" is true and there are more than 0 files in the current directory,
+        # add an extra node to display them.
         if files and show_files:
             index += 1
             tree.attr("node", shape="box", style="")
-            # Display files in a box on the graph as well as memory information
-            # if parameters permit
+            # Display files in a box on the graph as well as memory information if parameters permit.
             if data:
                 file_node.extend(f"{len(files)} File{multiple(len(files))} ({file_memory})\l")
+
             file_node.extend(("\l".join(files), "\l"))
             file_node_str = "".join(file_node)
             file_node.clear()
-            id_ = f"{index}{file_node_str}".replace(os.sep, "")
-            tree.node(id_, label=file_node_str)
-            tree.edge(root, id_)
+
+            id = f"{index}{file_node_str}".replace(os.sep, "")
+            tree.node(id, label=file_node_str)
+            tree.edge(root, id)
 
     filename = filename.rsplit(".", 1)[0] if filename else f"{directory}_Graph"
     if not render:
@@ -187,8 +192,7 @@ def graph_dir(
             with open(f"{filename}.{file_type}", mode="wb" if is_png else "w") as f:
                 f.write(src.content if is_png else src.text)
         else:
-            print("Error rendering graph with quickchart.io.")
-            print("Graph may have been too large.")
+            raise Exception("Error rendering graph with quickchart.io. Graph may have been too large.")
 
 
 def main():
