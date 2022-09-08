@@ -122,7 +122,7 @@ def graph_dir(
     # Adds an "s" to elements != 1 to pluralize them.
     multiple = lambda l: "" if l == 1 else "s"
 
-    # Get data for size of each folder
+    # Get data for size of each folder.
     if data:
         dir_sizes = size(directory)
 
@@ -143,10 +143,10 @@ def graph_dir(
         directory_data.extend(os.path.basename(parent_directory))
 
         file_memory = convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))
-        # Display directory data if parameters permit
+        # Display directory data if parameters permit.
         if data:
             directory_data.extend(f" ({dir_sizes[root]})")
-        # \l left aligns items in their container
+        # \l left aligns items in their container.
         directory_data.append("\l")
         if data and dirs:
             directory_data.extend(f"{len(dirs)} Folder{multiple(len(dirs))}\l")
