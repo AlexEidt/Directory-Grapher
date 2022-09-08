@@ -134,7 +134,7 @@ def graph_dir(
             continue
         if not show_hidden:
             # Remove hidden directories from "dirs".
-            dirs[:] = [dir_ for dir_ in dirs if not dir_.startswith(("__", "."))]
+            dirs[:] = [dir for dir in dirs if not dir.startswith(("__", "."))]
 
         tree.attr("node", shape="folder", fillcolor="lemonchiffon", style="filled,bold")
 
@@ -158,9 +158,9 @@ def graph_dir(
 
         root = root.replace(os.sep, "")
         tree.node(root, label="".join(directory_data))
-        for dir_ in dirs:
-            path = os.path.join(root, dir_).replace(os.sep, "")
-            tree.node(path, label=dir_)
+        for dir in dirs:
+            path = os.path.join(root, dir).replace(os.sep, "")
+            tree.node(path, label=dir)
             tree.edge(root, path)
 
         # If "show_files" is true and there are more than 0 files in the current directory,
