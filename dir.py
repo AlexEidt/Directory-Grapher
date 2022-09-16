@@ -49,7 +49,7 @@ def size(path: str) -> dict:
     """
     file_sizes = {}
     for root, dirs, files in os.walk(os.path.normpath(f"./{path}/"), topdown=False):
-        size = sum([os.path.getsize(os.path.join(root, f)) for f in files])
+        size = sum(os.path.getsize(os.path.join(root, f)) for f in files)
         file_sizes[root] = size
 
         for dir_ in dirs:
@@ -142,7 +142,7 @@ def graph_dir(
         directory_data.clear()
         directory_data.extend(os.path.basename(parent_directory))
 
-        file_memory = convert(sum([os.path.getsize(os.path.join(root, f)) for f in files]))
+        file_memory = convert(sum(os.path.getsize(os.path.join(root, f)) for f in files))
         # Display directory data if parameters permit.
         if data:
             directory_data.extend(f" ({dir_sizes[root]})")
